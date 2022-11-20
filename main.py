@@ -4,6 +4,8 @@ import math
 from numpy import linalg as LA
 from numpy.core.fromnumeric import partition
 
+n = 4
+
 #смена колонок
 def swap_columns(a, i, j):
   for k in range(len(a)):
@@ -16,12 +18,12 @@ def swap_row(a, i, j):
   A[j] = temp
 
 def discrepancy(matrix,vector,vector1): #невязка
-  for i in range(4):
+  for i in range(n):
     vector1[i] = matrix[i][-1] - sum([matrix[i][j] * vector[j] for j in range(0, 4)])
 
 def norm(matrix):  #норма матрицы 
-  x = np.zeros((4, 1))
-  for i in range(4):
+  x = np.zeros((n, 1))
+  for i in range(n):
       x[i]=sum(abs(matrix[i]))
   return(max(x))
 
@@ -77,12 +79,10 @@ def get_Xi(C, X, Y, i):
     return Y[3]
   else:
     sum = 0
-    for k in range(i+1, 4, 1):
+    for k in range(i+1, n, 1):
       sum += C[i][k]*X[k]
     return Y[i] - sum
 
-global n
-n = 4
 A_orig = np.array([(10, -1, -2,  5), 
                    (-1, 12,  3, -4),
                    (-2, 3,  15,  8), 
@@ -93,23 +93,26 @@ A = copy.copy(A_orig)
 
 D = np.array([95, -41, 69, 27])
 
-B = np.array([(None, 0, 0,  0), 
-              (None, None, 0,  0),
-              (None, None, None,  0), 
-              (None, None, None,  None)])
+# B = np.array([(0, 0, 0,  0), 
+#               (0, 0, 0,  0),
+#               (0, 0, 0,  0), 
+#               (0, 0, 0,  0)])
 
-C = np.array([(None, None, None,  None), 
-              (0, None, None,  None),
-              (0, 0, None,  None), 
-              (0, 0, 0,  None)])
+# C = np.array([(0, 0, 0,  0), 
+#               (0, 0, 0,  0),
+#               (0, 0, 0,  0), 
+#               (0, 0, 0,  0)])
+
+B = np.zeros((n,n))
+C = np.zeros((n,n))
 
 Y = np.array([None, None, None, None])
 X = np.array([None, None, None, None])
 
-for i in range(0, 4, 1):
+for i in range(0, n, 1):
   for j in range(0, i+1, 1):
     B[i][j] = get_Bij(A, B, C, i, j)
-  for j in range(i, 4, 1):
+  for j in range(i, n, 1):
     C[i][j] = get_Cij(A, B, C, i, j)
 
 print("\nНижне треугольная B\n")
@@ -117,10 +120,10 @@ print_array(B)
 print("\nВерхне треугольная C\n")
 print_array(C)
 
-for i in range(0, 4, 1):
+for i in range(0, n, 1):
   Y[i] = get_Yi(B, D, Y, i)
 
-for i in reversed(range(0, 4, 1)):
+for i in reversed(range(0, n, 1)):
   X[i] = get_Xi(C, X, Y, i)
 
 print("Y: ")
