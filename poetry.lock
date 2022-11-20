@@ -1,0 +1,24 @@
+[[package]]
+name = "np"
+version = "1.0.2"
+description = "np = numpy++: numpy with added convenience functionality"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "numpy"
+version = "1.23.4"
+description = "NumPy is the fundamental package for array computing with Python."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.8"
+content-hash = "279d24fafe71a78e3947dd1f0e1a5fdbc7ca36b5e5cd82c6d3afb7693c4df77f"
+
+[metadata.files]
+np = []
+numpy = []
