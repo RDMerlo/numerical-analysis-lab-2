@@ -130,9 +130,9 @@ def jacobi(A, D, eps = 1e-6):
   while not stop_criterion:
     x_new = np.copy(X)
     for i in range(n):
-      s1 = sum(A[i][j] * X[j] for j in range(i))
-      s2 = sum(A[i][j] * X[j] for j in range(i + 1, n))
-      x_new[i] = (D[i] - s1 - s2) / (A[i][i])
+      s1 = sum(A[i][j] * X[j] for j in range(n))
+      # s2 = sum(A[i][j] * X[j] for j in range(i + 1, n))
+      x_new[i] = X[i] + (D[i] - s1) / (A[i][i])
     
     #норма ||.||_2
     vector_norm = get_norm_vector(x_new, X)
