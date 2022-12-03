@@ -21,12 +21,12 @@ def get_residual_vector(matrix, X):
 #       x[i]=sum(abs(matrix[i]))
 #   return(max(x))
 
-def get_norm_matrix_1(matrix): 
-  x = np.zeros((n, 1))
-  for j in range(n):
-    for i in range(n):
-      x[j] += abs(matrix[i][j])
-  return(max(x))
+# def get_norm_matrix_1(matrix): 
+#   x = np.zeros((n, 1))
+#   for j in range(n):
+#     for i in range(n):
+#       x[j] += abs(matrix[i][j])
+#   return(max(x))
 
 def get_norm_matrix_00(matrix): 
   x = np.zeros((n, 1))
@@ -98,21 +98,21 @@ def get_Xi(C, X, Y, i):
       sum += C[i][k]*X[k]
     return Y[i] - sum
 
-def gauss_seidel_method(A, D, eps = 1e-6):
-  X = np.zeros(n)
-  stop_criterion = False
-  while not stop_criterion:
-    x_new = np.copy(X)
-    for i in range(n):
-      s1 = sum(A[i][j] * x_new[j] for j in range(i))
-      s2 = sum(A[i][j] * X[j] for j in range(i + 1, n))
-      x_new[i] = (D[i] - s1 - s2) / (A[i][i])
+# def gauss_seidel_method(A, D, eps = 1e-6):
+#   X = np.zeros(n)
+#   stop_criterion = False
+#   while not stop_criterion:
+#     x_new = np.copy(X)
+#     for i in range(n):
+#       s1 = sum(A[i][j] * x_new[j] for j in range(i))
+#       s2 = sum(A[i][j] * X[j] for j in range(i + 1, n))
+#       x_new[i] = (D[i] - s1 - s2) / (A[i][i])
     
-    #норма ||.||_2
-    vector_norm = get_norm_vector(x_new, X)
-    stop_criterion = vector_norm < eps
-    X = x_new
-  return X
+#     #норма ||.||_2
+#     vector_norm = get_norm_vector(x_new, X)
+#     stop_criterion = vector_norm < eps
+#     X = x_new
+#   return X
 
 def jacobi(A, D, iteration_list, eps = 1e-6):
   X = np.zeros(n)
