@@ -14,11 +14,25 @@ def get_residual_vector(matrix, X):
     discrepancy[i] = matrix[i][-1] - sum([matrix[i][j] * X[j] for j in range(0, 4)])
   return discrepancy
   
-#норма матрицы ||A||_1
-def get_norm_matrix(matrix): 
+#норма матрицы ||A||_00
+# def get_norm_matrix(matrix): 
+#   x = np.zeros((n, 1))
+#   for i in range(n):
+#       x[i]=sum(abs(matrix[i]))
+#   return(max(x))
+
+def get_norm_matrix_1(matrix): 
+  x = np.zeros((n, 1))
+  for j in range(n):
+    for i in range(n):
+      x[j] += abs(matrix[i][j])
+  return(max(x))
+
+def get_norm_matrix_00(matrix): 
   x = np.zeros((n, 1))
   for i in range(n):
-      x[i]=sum(abs(matrix[i]))
+    for j in range(n):
+      x[i] += abs(matrix[i][j])
   return(max(x))
 
 #норма вектора ||A||_2
@@ -42,9 +56,9 @@ def print_vector(A):
     print("%.4f     " % A[j])
   print("")
   
-def print_vector_18(A):
+def print_vector_18(A, p=18):
   for j in range(0, len(A), 1):
-    print("%.18f     " % A[j])
+    print(f"%.{p}f     " % A[j])
   print("")
 
 def get_Cij(A, B, C, i, j):
@@ -100,30 +114,7 @@ def gauss_seidel_method(A, D, eps = 1e-6):
     X = x_new
   return X
 
-def Jacobi(A , b, x_init):
-    def sum(a, x, j):
-        S = 0
-        for i, (m, y) in enumerate(zip(a, x)):
-            if i != j:
-                S += m*y
-        return S
-
-    if x_init is None:
-        y = [a/A[i][i] for i, a in enumerate(b)]
-    else:
-        y = x_init.copy()
-
-    x = [-(sum(a, y, i) - b[i])/A[i][i] for i, a in enumerate(A)]
-
-    while get_norm_vector(y, x) > 1e-6:
-        for i, elem in enumerate(x):
-            y[i] = elem
-        for i, a in enumerate(A):
-            x[i] = -(sum(a, y, i) - b[i])/A[i][i]
-  
-    return x
-
-def jacobi(A, D, eps = 1e-6):
+def jacobi(A, D, iteration_list, eps = 1e-6):
   X = np.zeros(n)
   stop_criterion = False
   
@@ -138,6 +129,7 @@ def jacobi(A, D, eps = 1e-6):
     vector_norm = get_norm_vector(x_new, X)
     stop_criterion = vector_norm < eps
     X = x_new
+    iteration_list.append(X)
   return X
   
 A_orig = np.array([(10, -1, -2,  5), 
@@ -156,12 +148,6 @@ C = np.zeros((n,n))
 
 Y = np.array([None, None, None, None])
 X = np.array([None, None, None, None])
-
-# A_Extended = np.column_stack((A, D))
-# discrepancy = get_residual_vector(A_Extended, X)
-# for i in range (n):
-#   print(f"r{i+1}=%.16f"% (abs(discrepancy[i])))
-
 
 for i in range(0, n, 1):
   for j in range(0, i+1, 1):
@@ -185,34 +171,35 @@ print_vector(Y)
 print("X: ")
 print_vector(X)
 
-print("\nВектор невязки")
+print("\nВектор невязки после м. Холецкого")
 A1 = np.column_stack((A, D))
 r = get_residual_vector(A1, X)
 print_vector_18(r)
 
-print("\nМетод Гаусса — Зейделя")
-X_1 = gauss_seidel_method(A, D)
-X = np.zeros(n)
-X_2 = Jacobi(A, D, X)
-X_3 = jacobi(A, D)
-print_vector(X_1)
-print_vector(X_2)
-print_vector(X_3)
+# print("\nМетод Гаусса — Зейделя")
+# X_1 = gauss_seidel_method(A, D)
+# print_vector(X_1)
 
-print("\nВектор невязки")
+print("\nМетод Якоби")
+iteration_list = []
+X_3 = jacobi(A, D, iteration_list)
+print_vector(X_3)
+print(f"Количество итераций = {len(iteration_list)}")
+
+print("\nВектор невязки после м. Якоби")
 # A1 = np.column_stack((A, D))
 # r = get_residual_vector(A1, X_2)
-r = np.dot(A, X_1) - D
-print_vector_18(r)
-r = np.dot(A, X_2) - D
-print_vector_18(r)
+# r = np.dot(A, X_1) - D
+# print_vector_18(r)
+r = np.dot(A, X_3) - D
+# print_vector_18(r)
 print()
 r = np.dot(A, X_3) - D
-print_vector_18(r)
+print_vector_18(r, 8)
 
 print("\nЧисло обусловленности")
-norm1=get_norm_matrix(A)
-norm2=get_norm_matrix(np.linalg.inv(A))
+norm1=get_norm_matrix_00(A)
+norm2=get_norm_matrix_00(np.linalg.inv(A))
 print("%2.6f" %(norm1*norm2))
 
 print("\nЧисло обусловленности - питон")
